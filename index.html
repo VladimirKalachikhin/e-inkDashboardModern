@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<LINK href="common.css" rel="stylesheet" type="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<META http-equiv="Content-Script-Type" content="text/javascript">
+	<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
+	<script src="fCommon.js"></script>
+	<script src="options.js"></script>
+	<title>e-inkDashboardModern</title>
+</head>
+<!--<body id="body">  id нужно для функции isBooblingFrom, но она не используется -->
+<body>
+<div id="wrapper">
+<div id="compass">
+	<div id="compassMessage">
+	</div>
+	<div id="center_icon">
+		<svg xml:space="default" version="1.1" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+			<path fill="none" stroke="black" stroke-width="10px" d="M70 125 L 70 245 180 245 180 125 Q 180 65 125 10 70 70 70 125"/>
+		</svg>
+		<svg version="1.1" id="windSVGimage" viewBox="0 0 302 50" xmlns="http://www.w3.org/2000/svg">
+			<!--  
+			Ширина штрихов - 10
+			-->
+			<defs>
+				<polyline id="bLine" points="110,2 30,2 30,12 110,12" stroke="black" stroke-width="2" />
+				<polyline id="w2dt5" points="0,2 15,22 25,22 10,2" />
+				<polyline id="w5" points="0,2 25,32 35,32 10,2" />
+				<polyline id="w25" points="0,2 25,32 40,2" />
+				<line id="hbl" x1="0" y1="2" x2="10" y2="2" />
+				<line id="vbl" x1="0" y1="2" x2="0" y2="12" />
+			</defs>
+			<g id="wMark" stroke="black" stroke-width="2" fill="none">
+			</g>
+		</svg>
+	</div>
+	<div id="center_marc">
+		<svg id="center_marc_streak" xml:space="default" version="1.1" viewBox="0 0 4 300" xmlns="http://www.w3.org/2000/svg">
+			<line fill="none" stroke="black" stroke-width="3px" x1="0" y1="10" x2="0" y2="110"></line>
+			<line fill="none" stroke="black" stroke-width="3px" x1="0" y1="190" x2="0" y2="290"></line>
+		</svg>
+		<div id="compassCard">
+			<div class="compass-face">
+				<div class="charN"><div class="compas-face-scale">0</div>N<br>|</div>
+				<div class="charNNE"><div class="compas-face-scale">22.5</div>NNE<br>|</div>
+				<div class="charNE"><div class="compas-face-scale">45</div>NE<br>|</div>
+				<div class="charENE"><div class="compas-face-scale">67.5</div>ENE<br>|</div>
+				<div class="charE"><div class="compas-face-scale">90</div>E<br>|</div>
+				<div class="charESE"><div class="compas-face-scale">112.5</div>ESE<br>|</div>
+				<div class="charSE"><div class="compas-face-scale">135</div>SE<br>|</div>
+				<div class="charSSE"><div class="compas-face-scale">157.5</div>SSE<br>|</div>
+				<div class="charS"><div class="compas-face-scale">180</div>S<br>|</div>
+				<div class="charSSW"><div class="compas-face-scale">202.5</div>SSW<br>|</div>
+				<div class="charSW"><div class="compas-face-scale">225</div>SW<br>|</div>
+				<div class="charWSW"><div class="compas-face-scale">247.5</div>WSW<br>|</div>
+				<div class="charW"><div class="compas-face-scale">270</div>W<br>|</div>
+				<div class="charWNW"><div class="compas-face-scale">292.5</div>WNW<br>|</div>
+				<div class="charNW"><div class="compas-face-scale">315</div>NW<br>|</div>
+				<div class="charNNW"><div class="compas-face-scale">337.5</div>NNW<br>|</div>
+			</div>
+			<div id="collisionArrows">
+			</div>
+				<div id="collisionArrow" style="display:none;">
+					<img class="collisionArrowImg" src="img/arrow.svg">
+				</div>
+			<div id="mobMark" style="display:none;">
+				<img class="blink" src="img/mob.svg">
+			</div>
+			<div id="nextPointDirection" style="display:none;">
+				<svg version="1.1" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+					<polygon fill="black" stroke="black" points="1,1 5,9 9,1" />
+				</svg>
+			</div>
+		</div>
+	</div>
+</div>
+<img id="modeMenuIcon" src="img/settings.svg">
+<form id="modeMenu" onsubmit="modeMenuSubmit(event)">
+	<div class="withBorder" style="height:50%;">
+		<div class="modeMenuBlock" style="">
+			<div style="width:80%;float:right;padding-top:1em;">
+				<select name="courseTypeSelector" id="courseTypeSelector" style="width:96%;font-size:120%;">
+				</select>
+			</div>
+			<div style="width:16%; padding: 0 0.75em 0 0.75em;text-align:right;">
+				<label for="courseTypeSelector" style=""></label>
+			</div>
+		</div>
+		<div class="modeMenuBlock" style="s">
+			<div style="width:80%;float:right;padding-top:1em;">
+				<select name="windTypeSelector" id="windTypeSelector" style="width:96%;font-size:120%;">
+				</select><br>
+			</div>
+			<div style="width:16%; padding: 0 0.75em 0 0.75em;text-align:right;">
+				<label for="windTypeSelector" style=""></label>
+			</div>
+		</div>
+	</div>
+	<div class="withBorder" style="height:30%;">
+		<div style="width:80%;float:right;padding-top:1em;">
+			<label for="modeSelector" style=""></label><br>
+			<select name="modeToCorner" id="modeSelector" style="width:96%;font-size:120%;">
+			</select><br>
+		</div>
+		<div style="width:16%;position:relative;top:50%;transform: translate(0, -50%);text-align: center;">
+			<input class="radio" style="margin:0 2em 2em 0;" type="radio" name="DOMidSelection" value="leftTopBlock" checked onChange="DOMidSelectionUpdOption(event)">
+			<input class="radio" style="" type="radio" name="DOMidSelection" value="rightTopBlock"  onChange="DOMidSelectionUpdOption(event)"><br>
+			<input class="radio" style="margin:0 2em 0 0;" type="radio" name="DOMidSelection" value="leftBottomBlock"  onChange="DOMidSelectionUpdOption(event)">
+			<input class="radio" style="" type="radio" name="DOMidSelection" value="rightBottomBlock"  onChange="DOMidSelectionUpdOption(event)">
+		</div>
+	</div>
+	<input type="button" id="resetToDefaultButton" value="" class="withBorder" style="" onclick="modeMenuReset();">
+	<input type="submit" value="✓" class="withBorder" style="">
+</form>
+<div id="topMessage">
+</div>
+<div id="bottomMessage">
+</div>
+<div id="leftTopBlock" onclick="bigBlock(this,'leftTopBlockBig');" style="display:none;">
+</div>
+<div id="rightTopBlock" onclick="bigBlock(this,'rightTopBlockBig');" style="display:none;">
+</div>
+<div id="leftBottomBlock" onclick="bigBlock(this,'leftBottomBlockBig');" style="display:none;">
+</div>
+<div id="rightBottomBlock" onclick="bigBlock(this,'rightBottomBlockBig');" style="display:none;">
+</div>
+<div id="MOBmessage"  class="withBorder">
+	<div class="messageButton withBorder" id="MOBmessageAddPointButton" style="width:50%;margin-right:3em;" onclick="sendMOBtoServer(true);">
+		<img src="img/mob.svg"> <span></span>
+	</div>
+	<div class="messageButton withBorder" id="MOBmessageCancelButton" style="margin:3em auto;width:25%;" onclick="sendMOBtoServer(false);closeMOBmessage();">
+		 ✘ <span></span>
+	</div>
+</div>
+<div id="mobButton"  class="withBorder" style="display:none;">
+	<img src="img/mob.svg">
+</div>
+</div> <!-- end wrapper -->
+<script>"use strict" 
+if(!options.gpsdProxyHost) options.gpsdProxyHost = '[::1]';
+if(!options.gpsdProxyPort) options.gpsdProxyPort = '3839';
+var subscribe = '?WATCH={"enable":true,"json":true,"subscribe":"TPV,ATT,ALARM"};';
+// FOR TEST
+//compassCard.style.transform = 'rotate(30deg)';
+////FOR TEST
+var mobPosition=null;	// координаты текущего маркера MOB в формате {"longitude": xx, "latitude": xx}, прии этом режим MOB может быть, а текущего маркера может не быть, если MOB от SART
+var gpsdPROXYbackend = false;
+var socket;
+var bottomMessages = {};
+// Интернационализация
+// Сначала загружается английская internationalisation/en.js, 
+// а потом пытаемся сделать её русской (или какой там...)
+var i18n;	// объект со строками подписей
+internalisationApply();	// 
+
+// Структура, описывающая, что и в каком виде брать из приходящих данных, и как потом показывать.
+// Также там хранятся собственно пришедшие и преобразованные данные.
+// Несмотря на то, что с сервера всегда приходят полные и актуальные данные, они приходят
+// по одному сообщению на класс gpsd. Однако, для показа данных TPV может понадобится heading,
+// но heading - в ATT. Поэтому только приходящих данных недостаточно, и нужно хранить предыдущие,
+// кои и хранятся в структуре displayData.
+// Однако, практика показала, что это не очень удачная абстракция, и её существование обусловлено
+// тем, что её удобно изменять пользователю для конфигурации внешнего вида.
+var displayData = displayDataPopulate(options);	// options - in options.js
+//console.log("displayData:",displayData);
+
+var testSKresponce = {"summ": 0, "cnt": 0};
+// Завершающая инициализация
+const savedDisplayData = storageHandler.restore('displayData');
+//console.log('savedDisplayData:',savedDisplayData);
+if(savedDisplayData) {
+	displayData = savedDisplayData;	// при этом, если данные разных версий, _необходимо_ воспользоваться кнопкой "восстановить умолчальные"
+};
+//console.log('displayData:',displayData);
+
+// Окно сообщения MOB
+// Навешивание обработчиков должно быть однократным, поэтому отдельно.
+MOBmessage.addEventListener('click',function (event){	// для срабатывания клика везде, кроме самого окна, для закрытия
+	event.stopPropagation();	// чтобы оно не дошло до body, на который раньше успело навеситься modeMenuClose.
+});
+mobButton.addEventListener('click',function (event){
+	event.stopPropagation();	// чтобы оно не дошло до body, на который раньше успело навеситься closebotMOBmessage. Что странно...
+	MOBalarm();
+});
+MOBmessageInit();
+// Окно меню параметров
+modeMenu.addEventListener('click',function (event){	// для срабатывания клика везде, кроме самого окна, для закрытия
+	event.stopPropagation();	// чтобы оно не дошло до body, на который раньше успело навеситься modeMenuClose.
+});
+modeMenuIcon.addEventListener('click',function (event){
+	event.stopPropagation();	// чтобы оно не дошло до body, на который раньше успело навеситься modeMenuClose.
+	modeMenuOpen();
+});
+modeMenuInit();	
+
+// Ветер
+if(displayData.wangle && displayData.wangle.trueWind) {	// если ветер истинный
+	compassCard.appendChild(windSVGimage);	// переставим символ ветра в картушку
+};
+displayOFF();
+
+// Поехали
+const uri = `ws://${options.gpsdProxyHost}:${options.gpsdProxyPort}`;
+doWebsocket(uri) //	запускаем прослушивание сокета и обработку полученного
+// приехали
+
+
+
+// Дальше определение функций
+
+function doWebsocket(uri){
+socket = new WebSocket(uri);
+socket.onopen = websocketOnOpen;
+socket.onmessage = websocketOnMessage;
+socket.onclose = websocketOnClose;
+socket.onerror = websocketOnError;
+//console.log('[doWebsocket] try to open socket',socket);
+} // end function doWebsocket
+
+
+function websocketOnOpen(event) {
+/**/
+// формируем подписку
+//event.target.send(subscribe);	// подписываемся
+event.target.send("\n\n");	// gpsdPROXY не отзовётся, если ему что-нибудь не прислать.
+console.log("Winsocket open: Connection establish with "+uri);
+displayON();
+}; // end function websocketOnOpen
+
+
+function websocketOnMessage(event) {
+//console.log(event);
+// Получаем исходные данные
+let indata;
+try {
+	indata = JSON.parse(event.data);	// но просто строка -- это корректный json, и никаких ошибок не будет, если сервер вернул не json
+	if(!indata) throw Error('inbound empty');
+	if(typeof indata !== 'object')  throw Error('inbound not a object: '+indata);
+}
+catch(error) {
+	console.log('Parsing inbound data error: ',error.message);
+	mobPosition = null;
+	display();	// нарисуем то, что есть
+	return;
+}
+//console.log(`[message] Данные получены с сервера: `,JSON.stringify(indata,null,"\t"));
+switch(indata.class){
+case 'VERSION':
+	console.log('websocketOnMessage: Handshaiking with gpsd begin: VERSION recieved. Sending WATCH');
+	event.target.send(subscribe);	// подписываемся
+	return;
+	break;
+case 'DEVICES':
+	console.log('websocketOnMessage: Handshaiking with gpsd proceed: DEVICES recieved');
+	return;
+	break;
+case 'WATCH':
+	console.log('websocketOnMessage: Handshaiking with gpsd complit: WATCH recieved.');
+	gpsdPROXYbackend = true;
+	mobButton.style.display = '';
+	return;
+	break;
+};
+
+byDisplayName: for(let displayName in displayData){
+	if(displayData[displayName].gpsdClass != indata.class) continue;
+	switch(displayName){	// идея описания того, как обходиться с данными, исключительно в displayData - оказалась приводящей к бессмысленной монструозности. Абстракции - зло.
+	case 'position':
+		if(indata.lon === null || indata.lon === undefined || indata.lat === null || indata.lat === undefined ){
+			displayData[displayName].data = null;
+		}
+		else {
+			displayData[displayName].data = {"longitude":indata.lon,"latitude":indata.lat};
+		};
+		break;
+	default:
+		//if(displayName=='speed') console.log('displayName=',displayName,'displayData[displayName].gpsdType=',displayData[displayName].gpsdType,'indata[displayData[displayName].gpsdType]=',indata[displayData[displayName].gpsdType]);
+		//console.log('displayName=',displayName,'displayData[displayName].gpsdType=',displayData[displayName].gpsdType,'indata[displayData[displayName].gpsdType]=',indata[displayData[displayName].gpsdType]);
+		if(displayData[displayName].data === false) continue byDisplayName;	// эту величину указано не показывать
+		if(indata[displayData[displayName].gpsdType] === null || indata[displayData[displayName].gpsdType] === undefined){
+			displayData[displayName].data = null;
+		}
+		else if(typeof indata[displayData[displayName].gpsdType] === 'object'){
+			displayData[displayName].data = indata[displayData[displayName].gpsdType];
+		}
+		else{
+			displayData[displayName].data = indata[displayData[displayName].gpsdType] * displayData[displayName].multiplicator;
+		};
+	};	
+};
+display(indata.class);	// Собственно рисование данных
+}; // end function websocketOnMessage
+
+
+function websocketOnClose(event) {
+/**/
+if (event.wasClean) {
+	console.log(`Websocket closed cleary with code ${event.code} by reason: ${event.reason}`);
+} 
+else {	// сервер убил процесс или сеть недоступна. Обычно в этом случае event.code 1006
+	console.log(`Websocket closed: connection broken with code ${event.code} by reason ${event.reason}`);
+	window.setTimeout(doWebsocket, 5000, uri); 	// перезапустим сокет через 5 секунд
+}
+displayOFF();
+}; // end function websocketOnClose
+
+
+function websocketOnError(error) {
+/**/
+console.log(`Websocket error: ${error.message}`);
+}; // end function websocketOnError
+
+</script>
+</body>
+</html>
+

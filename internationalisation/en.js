@@ -1,0 +1,76 @@
+var i18nLocal = {
+	"dashboardCourseTXT" : "Course",
+	"dashboardMagCourseTXT" : "Magnetic course",
+	"dashboardHeadingTXT" : "Heading",
+	"dashboardMagHeadingTXT" : "Heading magnetic",
+	"dashboardCompassHeadingTXT" : "Heading compass",
+	"dashboardSpeedTXT" : "Speed",
+	"dashboardVaterSpeedTXT" : "Speed through water",
+	"dashboardSpeedMesTXT" : "km/h",
+	"dashboardDepthTXT" : "Depth",
+	"dashboardKeelDepthTXT" : "Depth below keel",
+	"dashboardTransDepthTXT" : "Depth below transducer",
+	"dashboardDepthMesTXT" : "m",
+	"dashboardGNSSoldTXT" : "There is no data",
+	"dashboardCollisionAlarmTXT" : "Distance to the nearest navigate danger",
+	"dashboardMOBalarmTXT" : "Distance to the MOB",
+	"dashboardMOBbuttonAddTXT" : "Add MOB point",
+	"dashboardMOBbuttonCancelTXT" : "Cancel",
+	"dashboardAlarmDistanceMesTXT" : "m.",
+
+	"dashboardWindSpeedTXT" : "Apparent wind",
+	"dashboardWindSpeedMesTXT" : "m/sec",
+	"dashboardTrueWindSpeedTXT" : "True wind",
+
+	"dashboardPropStopTXT" : "Engine stopped",
+	"dashboardPropRevolutionTXT" : "engine revolutions",
+	"dashboardPropRevolutionMesTXT" : "RPM",
+	"dashboardPropTemperatureTXT" : "engine temperature",
+	"dashboardTemperatureMesTXT" : "°C",
+	"dashboarAirTemperatureTXT" : "Current outside air temperature",
+	"dashboarAirPressureTXT" : "Current outside air ambient pressure",
+	"dashboardAirPressureMesTXT" : "hPa",
+	"dashboarAirHumidityTXT" : "Current outside air relative humidity",
+	"dashboardAirHumidityMesTXT" : "%",
+	"dashboarWaterTemperatureTXT" : "Current water temperature",
+
+	"dashboarNextPointTXT" : "Distance to the next point of navigate",
+	"dashboarNextPointMesMTXT" : "m.",
+	"dashboarNextPointMesKMTXT" : "km.",
+	
+	"courseTypeSelectorLabelTXT" : "Will be displayed as a Course:",
+	"courseTypeSelectorOptionsTXT" : {
+						"track" : "Course over ground (COG)",
+						"magtrack" : "Course over ground magnetic (CGM)",
+						"heading" : "Heading true (HT)",
+						"mheading" : "Heading magnetic (HM)",
+						//"mheadingC" : "Heading compass (HC)"
+	},
+
+	"windTypeSelectorLabelTXT" : "Will be displayed as a Wind direction:",
+	"windTypeSelectorOptionsTXT" : {"none" : "none",
+						"wangler" : "Apparent wind (AWA)",
+						"wanglet" : "True wind through ground (GWA)",
+						"wanglem" : "Wind direction magnetic (MWD)"
+	},
+
+	"modeSelectorLabelTXT" : "In this corner will be displayed:",
+	"modeSelectorOptionsTXT" : {"none" : "none",
+						"speed" : "Speed ower ground (SOG)",	// gpsd type : description
+						//"speedr" : "Speed through water (STW)",
+						//"depthBS" : "Depth below surface (DBS)",
+						//"depthBK" : "Depth below keel (DBK)",
+						//"depth" : "Depth below transducer (DBT)",
+						"depth" : "Depth",
+						//"Engine1r" : "Engine 1 revolutions",
+						//"Engine1t" : "Engine 1 temperature",
+						//"Engine2r" : "Engine 2 revolutions",
+						//"Engine2t" : "Engine 2 temperature",
+						"temp" : "Outside air temperature",
+						//"airP" : "Outside air pressure",
+						//"airH" : "Outside air relative humidity",
+						"wtemp" : "Water temperature",
+						//"navPoint" : "Next navigated point"
+	},
+	"resetToDefaultButtonTXT" : "Reset to default"
+};
