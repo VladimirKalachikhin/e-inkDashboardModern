@@ -424,10 +424,10 @@ function display(gpsdClass=null){
 Global displayData mobPosition
 */
 //console.log('[display] gpsdClass=',gpsdClass);
-if(!gpsdClass) {	// выключим всё и нарисуем что есть.
-	displayOFF();
-	displayON();
-};
+//if(!gpsdClass) {	// выключим всё и нарисуем что есть. Оно мигает, если там координаты протухли. оно и без вполне
+//	displayOFF();
+//	displayON();
+//};
 let str='',htmlBLock;
 let gpsdType;
 //console.log('[display] displayData:',displayData);
@@ -518,10 +518,12 @@ for(let displayName in displayData){
 				//console.log('[display] in mob data:',JSON.stringify(displayData.alarm.data[alarmType],null,"\t"));
 				if(displayData.alarm.data.MOB.status){	// режим MOB есть
 					//console.log('mob:',JSON.stringify(displayData.alarm.data.MOB,null,"\t"));
-					mobPosition=null;	// если режим есть, и пришло что-то новое, знаяит, старое неактуально?
+					mobPosition=null;	// если режим есть, и пришло что-то новое, значит, старое неактуально?
 					for(const point of displayData.alarm.data.MOB.points){
 						if(!point.current) continue;
-						mobPosition = {'longitude': point.coordinates[0],'latitude': point.coordinates[1]};
+						if(point.coordinates[0] != null && point.coordinates[1] != null){	// По тем или иным причинам может быть точка без координат
+							mobPosition = {'longitude': point.coordinates[0],'latitude': point.coordinates[1]};
+						};
 						break;
 					};
 					//console.log('The MOB is raised, mobPosition:',mobPosition);
@@ -814,7 +816,7 @@ MOBmessageCancelButton.querySelector('span').innerHTML = i18n.dashboardMOBbutton
 
 function MOBalarm(){
 /* Global mobPosition */
-if(displayData.alarm.data.MOB.status){	// режим MOB есть
+if((displayData.alarm.data.MOB != null) && displayData.alarm.data.MOB.status){	// режим MOB есть
 	MOBmessageAddPointButton.style.display = '';
 	MOBmessage.style.display = '';
 	document.body.addEventListener('click',(event)=>{closeMOBmessage();},{'once':true});
@@ -838,7 +840,7 @@ if(status) {	// нужно открыть режим "человек за бор
 	let coordinates = [];	// если нет координат, то Leaflet такую точку просто не показывает.
 	if(displayData.position.data) coordinates = [displayData.position.data.longitude,displayData.position.data.latitude];
 
-	if(displayData.alarm.data.MOB.status){	// Режим MOB уже есть, имеются данные MOB, надо добавить ещё одну точку
+	if((displayData.alarm.data.MOB != null) && displayData.alarm.data.MOB.status){	// Режим MOB уже есть, имеются данные MOB, надо добавить ещё одну точку
 		displayData.alarm.data.MOB.points.push({
 			"coordinates": coordinates,
 			"current": true,
@@ -864,6 +866,9 @@ displayData.alarm.data.MOB.timestamp = Math.round(Date.now()/1000);
 if(socket.readyState == 1) {
 	//console.log('[sendMOBtoServer] отсылается на сервер:','?UPDATE={"updates":['+JSON.stringify(displayData.alarm.data.MOB)+']};');
 	socket.send('?UPDATE={"updates":['+JSON.stringify(displayData.alarm.data.MOB)+']};');
+}
+else{	// но если некуда отсылать - забудем обо всём
+	delete displayData.alarm.data.MOB;
 };
 }; // end function sendMOBtoServer
 

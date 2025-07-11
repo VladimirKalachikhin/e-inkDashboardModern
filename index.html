@@ -7,7 +7,7 @@
 	<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
 	<script src="fCommon.js"></script>
 	<script src="options.js"></script>
-	<title>e-inkDashboardModern</title>
+	<title>e-inkDashboardModern v.0.0.1</title>
 </head>
 <!--<body id="body">  id нужно для функции isBooblingFrom, но она не используется -->
 <body>
@@ -258,7 +258,7 @@ case 'DEVICES':
 case 'WATCH':
 	console.log('websocketOnMessage: Handshaiking with gpsd complit: WATCH recieved.');
 	gpsdPROXYbackend = true;
-	mobButton.style.display = '';
+	mobButton.style.display = '';	// типа, gpsd2websocket не шлёт watch
 	return;
 	break;
 };
