@@ -70,7 +70,7 @@ var i18nLocal = {
 						//"airP" : "Outside air pressure",
 						//"airH" : "Outside air relative humidity",
 						"wtemp" : "Water temperature",
-						//"navPoint" : "Next navigated point"
+						"navPoint" : "Next navigated point"
 	},
 	"resetToDefaultButtonTXT" : "Reset to default"
 };

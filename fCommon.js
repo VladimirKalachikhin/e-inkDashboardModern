@@ -44,8 +44,10 @@ let displayData = {
 		"gpsdType": "alarms",
 		"data" : null
 	},
-	//"nextPoint" : {
-	//},
+	"nextPoint" : {	// 
+		"gpsdClass": "WPT",
+		"data" : null
+	},
 };
 
 // Вся пурга с labelTemplate - для того, чтобы сперва загрузить английскую локализацию,
@@ -55,14 +57,13 @@ let displayData = {
 // браузере, а не только с помощью веб-сервера.
 if(options.track == 'magtrack'){
 	displayData.track = {	// course over ground, путевой угол, track в gpsd
-		"gpsdClass": "TPV",
-		"gpsdType": "magtrack",
+		"gpsdClass": "TPV",	// класс gpsd
+		"gpsdType": "magtrack",	// свойство класса gpsd, конкретная величина
 		"labelTemplate": "i18n.dashboardMagCourseTXT",	// наименование переменной из internationalisation.js
 		"label" : i18n.dashboardMagCourseTXT,
 		"precision": 0,	// точность показываемой цифры, символов после запятой
 		"multiplicator": 1, 	// на что нужно умножить значение для показа
 		"headingDirection": headingDirection,
-		"menuItem" : "magtrack",
 		"data" : null
 	};
 	displayData.heading = {	// heading, курс
@@ -212,8 +213,9 @@ return displayData;
 
 function buildOptions(displayData,option,DOMid=null){
 /* величины для показа в углах экрана */
-
-if(option == 'speed') {	// Speed over ground
+if(option === false || option === 'false' || option === 'none') return;	// указано не показывать в этом углу
+switch(option){
+case 'speed':	// Speed over ground
 	displayData.speed = {
 		"gpsdClass": "TPV",
 		"gpsdType": "speed",
@@ -224,8 +226,47 @@ if(option == 'speed') {	// Speed over ground
 		"DOMid": DOMid,
 		"data" : null
 	};
-}
-/*else if(option == 'speedr') { // speed Through Water. Отсутствует в gpsd
+	break;
+case 'depth':	// Только одна глубина, потому что приходит уже исправленная глубина, и неизвестно, в какую сторону.
+	displayData.depth = {
+		"gpsdClass": "ATT",
+		"gpsdType": "depth",
+		"labelTemplate": "i18n.dashboardDepthTXT+', '+i18n.dashboardDepthMesTXT", 	// глубина
+		"label" : i18n.dashboardDepthTXT+', '+i18n.dashboardDepthMesTXT,
+		"precision" : 1,
+		"multiplicator" : 1,
+		"DOMid": DOMid,
+		"data" : null
+	};
+	break;
+case 'temp':	// температура воздуха
+	displayData.airTemperature = {
+		"gpsdClass": "ATT",
+		"gpsdType": "temp",
+		"labelTemplate": "i18n.dashboarAirTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT",
+		"label" : i18n.dashboarAirTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT,
+		"precision" : 0,
+		"DOMid": DOMid,
+		"data" : null
+	};
+	break;
+case 'wtemp':	// температура воды
+	displayData.waterTemperature = {
+		"gpsdClass": "ATT",
+		"gpsdType": "wtemp",
+		"labelTemplate": "i18n.dashboarWaterTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT",
+		"label" : i18n.dashboarWaterTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT,
+		"precision" : 0,
+		"DOMid": DOMid,
+		"data" : null
+	};
+	break;
+case "nextPoint":
+	displayData.nextPoint.labelTemplate = "i18n.dashboarNextPointTXT";
+	displayData.nextPoint.label = i18n.dashboarNextPointTXT;
+	displayData.nextPoint.DOMid = DOMid;
+	break;
+/*case 'speedr': // speed Through Water. Отсутствует в gpsd
 	displayData.speed = {
 		"gpsdClass": "TPV",
 		"gpsdType": "speedr",
@@ -236,8 +277,8 @@ if(option == 'speed') {	// Speed over ground
 		"DOMid": DOMid,
 		"data" : null
 	};
-}*/
-/*else if(option == 'depthBS') {	// depth below Surface.  Отсутствует в gpsd.
+	break;
+case 'depthBS':	// depth below Surface.  Отсутствует в gpsd.
 	displayData.depth = {
 		"gpsdClass": "ATT",
 		"gpsdType": "depthBS",
@@ -248,8 +289,8 @@ if(option == 'speed') {	// Speed over ground
 		"DOMid": DOMid,
 		"data" : null
 	};
-}*/
-/*else if(option == 'depthBK') {	// depth below Keel.  Отсутствует в gpsd, но можно сделать в gpsdPROXY?
+	break;
+case 'depthBK':	// depth below Keel.  Отсутствует в gpsd, но можно сделать в gpsdPROXY?
 	displayData.depth = {
 		"gpsdClass": "ATT",
 		"gpsdType": "depthBK",
@@ -260,8 +301,8 @@ if(option == 'speed') {	// Speed over ground
 		"DOMid": DOMid,
 		"data" : null
 	};
-}*/
-/*else if(option == 'depth') {	// depth below Transducer.
+	break;
+case 'depth':	// depth below Transducer.
 	displayData.depth = {
 		"gpsdClass": "ATT",
 		"gpsdType": "depth",
@@ -272,31 +313,8 @@ if(option == 'speed') {	// Speed over ground
 		"DOMid": DOMid,
 		"data" : null
 	};
-}*/
-else if(option == 'depth') {	// Только одна глубина, потому что приходит уже исправленная глубина, и неизвестно, в какую сторону.
-	displayData.depth = {
-		"gpsdClass": "ATT",
-		"gpsdType": "depth",
-		"labelTemplate": "i18n.dashboardDepthTXT+', '+i18n.dashboardDepthMesTXT", 	// глубина
-		"label" : i18n.dashboardDepthTXT+', '+i18n.dashboardDepthMesTXT,
-		"precision" : 1,
-		"multiplicator" : 1,
-		"DOMid": DOMid,
-		"data" : null
-	};
-}
-else if(option == 'temp') {	/* температура воздуха */ 
-	displayData.airTemperature = {
-		"gpsdClass": "ATT",
-		"gpsdType": "temp",
-		"labelTemplate": "i18n.dashboarAirTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT",
-		"label" : i18n.dashboarAirTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT,
-		"precision" : 0,
-		"DOMid": DOMid,
-		"data" : null
-	};
-}
-/*else if(option == 'airP')) {	// давление воздуха.  Отсутствует в gpsd.
+	break;
+case 'airP':	// давление воздуха.  Отсутствует в gpsd.
 	displayData.airPressure = {
 		"gpsdClass": "ATT",
 		"gpsdType": "airP",
@@ -307,8 +325,8 @@ else if(option == 'temp') {	/* температура воздуха */
 		"DOMid": DOMid,
 		"data" : null
 	};
-}*/
-/*else if(option == 'airH') {	// влажность  Отсутствует в gpsd
+	break;
+case 'airH':	// влажность  Отсутствует в gpsd
 	displayData.airHumidity = {
 		"gpsdClass": "ATT",
 		"gpsdType": "airH",
@@ -318,22 +336,9 @@ else if(option == 'temp') {	/* температура воздуха */
 		"DOMid": DOMid,
 		"data" : null
 	};
-}*/
-else if(option == 'wtemp') {	/* температура воды */
-	displayData.waterTemperature = {
-		"gpsdClass": "ATT",
-		"gpsdType": "wtemp",
-		"labelTemplate": "i18n.dashboarWaterTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT",
-		"label" : i18n.dashboarWaterTemperatureTXT+', '+i18n.dashboardTemperatureMesTXT,
-		"precision" : 0,
-		"DOMid": DOMid,
-		"data" : null
-	};
-}
-else if(option === false || option === 'false' || option === 'none'){	// указано не показывать в этом углу
-	// дык ничего и
+	break;*/
 };
-// А не будем здесь делать return, потому что я дурак, а дураки пишут на javascript
+// А не будем здесь делать return ничего, потому что я дурак, а дураки пишут на javascript
 }; // 		end function buildOptions
 
 
@@ -389,6 +394,7 @@ document.head.appendChild(internationalisationStringsScript);	// Это, соб�
 
 }; // end function internalisationApply
 
+
 function displayDataInternationalisation(){
 /* Переписывает строки в displayData по текущему состоянию i18n
 */
@@ -437,6 +443,9 @@ for(let displayName in displayData){
 	case 'position':
 		if(mobPosition && displayData.position.data) {	// обновляем расстояние до MOB
 			updMOBposition(displayData.position.data,mobPosition);
+		};
+		if((displayData.nextPoint.data != null) && (displayData.nextPoint.data.lat != null) && (displayData.nextPoint.data.lon != null)) {
+			displayNextPoint();	// рисуем всё про путевую точку.
 		};
 		break;
 	/* Рисование круга */
@@ -599,6 +608,20 @@ for(let displayName in displayData){
 			};
 		};
 		break;
+	case 'nextPoint':
+		//console.log('recieved WPT data',JSON.stringify(displayData.nextPoint,null,"\t"));
+		// не должны изменяться углы, если есть особые режимы: MOB и опасность столкновения
+		if(!displayData[displayName].DOMid) break;	// данный параметр запрошен, но не должен показываться
+		if((displayData[displayName].data==null) || (displayData.nextPoint.data.lat==null) || (displayData.nextPoint.data.lon==null)){	// координат путевой точки нет
+			nextPointDirection.style.display = 'none';	// выключим указатель
+			if((displayData[displayName].DOMid == 'leftBottomBlock') && mobPosition) break;	// не будем рисовать в нижнем левом углу, если режим MOB
+			if((displayData[displayName].DOMid == 'rightBottomBlock') && displayData.alarm.data && displayData.alarm.data.collisions) break;	// не будем рисовать в нижнем правом углу, если опасность столкновения
+			if(displayData[displayName].DOMid) document.getElementById(displayData[displayName].DOMid).style.display = 'none';
+		}
+		else{	// координаты путевой точки есть
+			if(displayData.position.data) displayNextPoint();	// если есть и свои координаты - рисуем всё про путевую точку.
+		};
+		break;
 	case 'speed':
 	case 'depth':
 	case 'airTemperature':
@@ -627,6 +650,42 @@ for(let displayName in displayData){
 		htmlBLock.innerHTML = str;
 	};
 };
+
+	function displayNextPoint(){
+	const azimuth = bearing(displayData.position.data, displayData.nextPoint.data);
+	//console.log('[displayNextPoint] azimuth=',azimuth);
+	nextPointDirection.style.transform = `rotate(${azimuth}deg)`;
+	nextPointDirection.style.display = '';
+
+	if(!displayData.nextPoint.DOMid) return;	// данный параметр запрошен, но не должен показываться
+	if((displayData.nextPoint.DOMid == 'leftBottomBlock') && mobPosition) return;	// не будем рисовать в нижнем левом углу, если режим MOB
+	if((displayData.nextPoint.DOMid == 'rightBottomBlock') && tpv.collisions && tpv.collisions.value) return;	// не будем рисовать в нижнем правом углу, если опасность столкновения
+
+	let dist = equirectangularDistance(displayData.position.data, displayData.nextPoint.data);
+	//console.log('[displayNextPoint] dist=',dist);
+	let mesTXT;
+	if(dist>1000){ 
+		dist = (dist/1000).toFixed(displayData.nextPoint.precision+1);
+		mesTXT = i18n.dashboarNextPointMesKMTXT;
+	}
+	else {
+		dist = dist.toFixed(displayData.nextPoint.precision);
+		mesTXT = i18n.dashboarNextPointMesMTXT;
+	}
+
+	const htmlBLock = document.getElementById(displayData.nextPoint.DOMid);
+	let str='';
+	if(displayData.nextPoint.DOMid.includes('ottom')) {	// указано размещать в нижних углах
+		str += dist;			
+		if(displayData.nextPoint.label) str += `<span style="font-size:var(--ltl1-font-size);"><br>${displayData.nextPoint.label}, ${mesTXT}</span>`;
+	}
+	else {
+		if(displayData.nextPoint.label) str += `<span style="font-size:var(--ltl1-font-size);">${displayData.nextPoint.label}, ${mesTXT}<br><br></span>`;
+		str += dist;			
+	}
+	htmlBLock.style.display = '';
+	htmlBLock.innerHTML = str;
+	}; // 	end function displayNextPoint
 }; // end function display()
 
 
@@ -1060,9 +1119,23 @@ if(bearing >= 360) bearing = bearing-360;
 return bearing;
 } // end function bearing
 
-function equirectangularDistance(from,to){
+function equirectangularDistance(fromIn,toIn){
 // https://www.movable-type.co.uk/scripts/latlong.html
 // from,to: {longitude: xx, latitude: xx}
+let from = {};
+if(fromIn.lat) from.latitude = fromIn.lat;
+else if(fromIn.latitude) from.latitude = fromIn.latitude
+if(fromIn.lon) from.longitude = fromIn.lon;
+else if(fromIn.lng) from.longitude = fromIn.lng
+else if(fromIn.longitude) from.longitude = fromIn.longitude
+
+let to = {};
+if(toIn.lat) to.latitude = toIn.lat;
+else if(toIn.latitude) to.latitude = toIn.latitude
+if(toIn.lon) to.longitude = toIn.lon;
+else if(toIn.lng) to.longitude = toIn.lng
+else if(toIn.longitude) to.longitude = toIn.longitude
+
 const rad = Math.PI/180;
 const φ1 = from.latitude * rad;
 const φ2 = to.latitude * rad;

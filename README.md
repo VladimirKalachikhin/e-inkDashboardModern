@@ -13,6 +13,7 @@ Contents:
 - [Features](#features)
 - - [Direction](#direction)
 - - [Wind](#wind)
+- - [Navigation](#navigation)
 - - [Collision alarm](#collision-alarm)
 - - [Man Overboard](#man-overboard)
 - - [In screen corners](#in-screen-corners)
@@ -55,6 +56,9 @@ One of the following values may be specified as the wind:
 * none
 
 The default value is the Apparent wind.
+
+### Navigation
+If there is information about the next navigation point, a direction indicator to that point will be displayed. If specified in the application configuration - the distance to a point will be displayed in one corner of the screen.  
 
 ### Collision alarm
 Using this feature requires [gpsdPROXY](https://github.com/VladimirKalachikhin/gpsdPROXY) as backend.

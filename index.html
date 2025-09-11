@@ -7,7 +7,10 @@
 	<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
 	<script src="fCommon.js"></script>
 	<script src="options.js"></script>
-	<title>e-inkDashboardModern v.0.0.1</title>
+	<title>e-inkDashboardModern v.0.1.0</title>
+	<!-- 
+0.1.0	follow waypoint support
+	-->
 </head>
 <!--<body id="body">  id нужно для функции isBooblingFrom, но она не используется -->
 <body>
@@ -140,7 +143,7 @@
 <script>"use strict" 
 if(!options.gpsdProxyHost) options.gpsdProxyHost = '[::1]';
 if(!options.gpsdProxyPort) options.gpsdProxyPort = '3839';
-var subscribe = '?WATCH={"enable":true,"json":true,"subscribe":"TPV,ATT,ALARM"};';
+var subscribe = '?WATCH={"enable":true,"json":true,"subscribe":"TPV,ATT,ALARM,WPT"};';
 // FOR TEST
 //compassCard.style.transform = 'rotate(30deg)';
 ////FOR TEST
@@ -275,10 +278,13 @@ byDisplayName: for(let displayName in displayData){
 		};
 		break;
 	default:
-		//if(displayName=='speed') console.log('displayName=',displayName,'displayData[displayName].gpsdType=',displayData[displayName].gpsdType,'indata[displayData[displayName].gpsdType]=',indata[displayData[displayName].gpsdType]);
+		//if(displayName=='nextPoint') console.log('displayName=',displayName,'displayData[displayName].gpsdType=',displayData[displayName].gpsdType,'indata=',indata);
 		//console.log('displayName=',displayName,'displayData[displayName].gpsdType=',displayData[displayName].gpsdType,'indata[displayData[displayName].gpsdType]=',indata[displayData[displayName].gpsdType]);
 		if(displayData[displayName].data === false) continue byDisplayName;	// эту величину указано не показывать
-		if(indata[displayData[displayName].gpsdType] === null || indata[displayData[displayName].gpsdType] === undefined){
+		if(displayData[displayName].gpsdType==null){	// не указано, какая величина gpsd будет использоваться. Берём всё. Кроме position, для которой костыль.
+			displayData[displayName].data = indata;
+		}
+		else if(indata[displayData[displayName].gpsdType] === null || indata[displayData[displayName].gpsdType] === undefined){	// указанная величина отсутствует
 			displayData[displayName].data = null;
 		}
 		else if(typeof indata[displayData[displayName].gpsdType] === 'object'){
