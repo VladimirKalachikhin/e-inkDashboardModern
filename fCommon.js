@@ -441,11 +441,12 @@ for(let displayName in displayData){
 	if(displayData[displayName].gpsdClass != gpsdClass) continue;
 	switch(displayName){
 	case 'position':
-		if(mobPosition && displayData.position.data) {	// обновляем расстояние до MOB
-			updMOBposition(displayData.position.data,mobPosition);
-		};
+		if(!displayData.position.data) break;
+		// обновляем расстояние до MOB
+		if(mobPosition) updMOBposition(displayData.position.data,mobPosition);
+		// рисуем всё про путевую точку.
 		if((displayData.nextPoint.data != null) && (displayData.nextPoint.data.lat != null) && (displayData.nextPoint.data.lon != null)) {
-			displayNextPoint();	// рисуем всё про путевую точку.
+			displayNextPoint();	
 		};
 		break;
 	/* Рисование круга */
@@ -975,7 +976,7 @@ for(let option in i18n.modeSelectorOptionsTXT){
 		//if(option.includes('1') && displayData.propLabel0.value) i18n.modeSelectorOptionsTXT[option] = i18n.modeSelectorOptionsTXT[option].replace('1',displayData.propLabel0.value);
 		//else if(option.includes('2') && displayData.propLabel1.value) i18n.modeSelectorOptionsTXT[option] = i18n.modeSelectorOptionsTXT[option].replace('2',displayData.propLabel1.value);
 	//};
-	if(tpvName && displayData[tpvName].gpsdType == option) selected=true;
+	if(tpvName && ((displayData[tpvName].gpsdType == option) || (displayData[tpvName].gpsdClass == option))) selected=true;
 	else selected=false;
 	modeSelector.add(new Option(i18n.modeSelectorOptionsTXT[option], option,selected,selected));
 };
@@ -995,7 +996,7 @@ for(tpvName in displayData){
 //console.log('[selectOption] DOMid=',DOMid,'tpvName=',tpvName);
 if(tpvName){
 	for(const option of modeSelector.options){
-		if(option.value != displayData[tpvName].gpsdType) continue;
+		if((option.value != displayData[tpvName].gpsdType) && (option.value != displayData[tpvName].gpsdClass)) continue;
 		option.selected = true;
 		break;
 	};

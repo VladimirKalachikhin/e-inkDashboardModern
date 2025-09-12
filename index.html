@@ -7,7 +7,7 @@
 	<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
 	<script src="fCommon.js"></script>
 	<script src="options.js"></script>
-	<title>e-inkDashboardModern v.0.1.0</title>
+	<title>e-inkDashboardModern v.0.1.1</title>
 	<!-- 
 0.1.0	follow waypoint support
 	-->
@@ -301,12 +301,17 @@ display(indata.class);	// Собственно рисование данных
 
 function websocketOnClose(event) {
 /**/
+//console.log('[websocketOnClose] event:',event);
 if (event.wasClean) {
 	console.log(`Websocket closed cleary with code ${event.code} by reason: ${event.reason}`);
 } 
 else {	// сервер убил процесс или сеть недоступна. Обычно в этом случае event.code 1006
 	console.log(`Websocket closed: connection broken with code ${event.code} by reason ${event.reason}`);
-	window.setTimeout(doWebsocket, 5000, uri); 	// перезапустим сокет через 5 секунд
+	let emuri;
+	//console.log('[websocketOnClose] event.target.url=',event.target.url,'uri=',uri);
+	if(event.target.url.replace(/^\/+|\/+$/g, '') == uri.replace(/^\/+|\/+$/g, '')) emuri = `ws://localhost:${options.gpsdProxyPort}`;	// в этом дурацком языке trim без параметров
+	else emuri = uri;
+	window.setTimeout(doWebsocket, 5000, emuri); 	// перезапустим сокет через 5 секунд
 }
 displayOFF();
 }; // end function websocketOnClose
@@ -314,6 +319,7 @@ displayOFF();
 
 function websocketOnError(error) {
 /**/
+//console.log('[websocketOnError] error:',error);
 console.log(`Websocket error: ${error.message}`);
 }; // end function websocketOnError
 
