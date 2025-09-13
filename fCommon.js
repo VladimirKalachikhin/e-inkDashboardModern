@@ -1,4 +1,7 @@
 /*
+displayDataPopulate(options)
+realDisplayDataPopulate(options)
+
 display()
 displayON()
 displayOFF()
@@ -209,6 +212,17 @@ if(options.rightBottomBlock) buildOptions(displayData, options.rightBottomBlock,
 
 return displayData;
 }; // end function displayDataPopulate
+
+
+function realDisplayDataPopulate(options){
+/* Global displayData */
+const newDisplayData = displayDataPopulate(options);
+//console.log('[realDisplayDataPopulate] newDisplayData:',newDisplayData);
+for(const parm in newDisplayData){
+	if(displayData[parm] && displayData[parm].data) newDisplayData[parm].data = displayData[parm].data;
+};
+displayData = newDisplayData;
+}; // end function realDisplayDataPopulate
 
 
 function buildOptions(displayData,option,DOMid=null){
@@ -1033,13 +1047,13 @@ modeMenu.style.display = 'none';
 
 function modeMenuReset(){
 /* Global: displayData options */
-storageHandler.del('displayData');
-displayData = displayDataPopulate(options);	// options - in options.js
-//console.log('[modeMenuSubmit] displayData:',displayData);
-//displayOFF();	// убрать всё с экрана
-//displayON();	// вернуть экран обратно
+storageHandler.del('options');
+realDisplayDataPopulate(defaultOptions);	// defaultOptions - in options.js
+//console.log('[modeMenuReset] displayData:',displayData);
 modeMenuClose();
 modeMenuInit();	
+//displayOFF();	// убрать всё с экрана
+//displayON();	// вернуть экран обратно
 }; // end function modeMenuReset
 
 function modeMenuSubmit(event){
@@ -1049,15 +1063,15 @@ function modeMenuSubmit(event){
 //console.log('[modeMenuSubmit] windTypeSelector',windTypeSelector.value,);
 //console.log('[modeMenuSubmit] DOMidSelection',modeMenu.querySelector('input[name="DOMidSelection"]:checked').value);
 //console.log('[modeMenuSubmit] modeSelector',modeSelector.value,);
-let useroptions = options	//  options - in options.js
-useroptions.track = courseTypeSelector.value;
-useroptions.wangle = windTypeSelector.value;
-useroptions[modeMenu.querySelector('input[name="DOMidSelection"]:checked').value] = modeSelector.value;
-displayData = displayDataPopulate(useroptions);	//
-//console.log('[modeMenuSubmit] displayData:',displayData);
+options.track = courseTypeSelector.value;
+options.wangle = windTypeSelector.value;
+options[modeMenu.querySelector('input[name="DOMidSelection"]:checked').value] = modeSelector.value;
+//console.log('[modeMenuSubmit] options:',options);
+realDisplayDataPopulate(options);	//
+console.log('[modeMenuSubmit] displayData:',displayData);
 displayOFF();	// убрать всё с экрана
 displayON();	// вернуть экран обратно
-storageHandler.save('displayData');
+storageHandler.save('options');
 //console.log('[modeMenuSubmit] displayData saved:',storageHandler.restore('displayData'));
 modeMenuClose();	// оно не надо, поскольку окно перегружается
 event.preventDefault(); // Prevent form submission, окно не перегружается

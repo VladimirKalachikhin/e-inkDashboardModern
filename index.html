@@ -7,7 +7,7 @@
 	<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
 	<script src="fCommon.js"></script>
 	<script src="options.js"></script>
-	<title>e-inkDashboardModern v.0.1.1</title>
+	<title>e-inkDashboardModern v.0.1.2</title>
 	<!-- 
 0.1.0	follow waypoint support
 	-->
@@ -141,6 +141,9 @@
 </div>
 </div> <!-- end wrapper -->
 <script>"use strict" 
+var options = storageHandler.restore('options');
+if(!options) options = defaultOptions;	// defaultOptions - in options.js
+
 if(!options.gpsdProxyHost) options.gpsdProxyHost = '[::1]';
 if(!options.gpsdProxyPort) options.gpsdProxyPort = '3839';
 var subscribe = '?WATCH={"enable":true,"json":true,"subscribe":"TPV,ATT,ALARM,WPT"};';
@@ -165,18 +168,10 @@ internalisationApply();	//
 // кои и хранятся в структуре displayData.
 // Однако, практика показала, что это не очень удачная абстракция, и её существование обусловлено
 // тем, что её удобно изменять пользователю для конфигурации внешнего вида.
-var displayData = displayDataPopulate(options);	// options - in options.js
+var displayData = displayDataPopulate(options);
 //console.log("displayData:",displayData);
 
-var testSKresponce = {"summ": 0, "cnt": 0};
 // Завершающая инициализация
-const savedDisplayData = storageHandler.restore('displayData');
-//console.log('savedDisplayData:',savedDisplayData);
-if(savedDisplayData) {
-	displayData = savedDisplayData;	// при этом, если данные разных версий, _необходимо_ воспользоваться кнопкой "восстановить умолчальные"
-};
-//console.log('displayData:',displayData);
-
 // Окно сообщения MOB
 // Навешивание обработчиков должно быть однократным, поэтому отдельно.
 MOBmessage.addEventListener('click',function (event){	// для срабатывания клика везде, кроме самого окна, для закрытия

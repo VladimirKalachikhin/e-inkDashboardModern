@@ -1,4 +1,4 @@
-var options = {
+var defaultOptions = {
 	// Хост и порт источника данных:
 	// Backend host & port:
 	//"gpsdProxyHost" : "127.0.0.1",
