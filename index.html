@@ -7,7 +7,7 @@
 	<script src="internationalisation/en.js"></script><!-- обязательно в начале, для инициализации переменных -->
 	<script src="fCommon.js"></script>
 	<script src="options.js"></script>
-	<title>e-inkDashboardModern v.0.1.2</title>
+	<title>e-inkDashboardModern v.0.1.3</title>
 	<!-- 
 0.1.0	follow waypoint support
 	-->
@@ -144,7 +144,10 @@
 var options = storageHandler.restore('options');
 if(!options) options = defaultOptions;	// defaultOptions - in options.js
 
-if(!options.gpsdProxyHost) options.gpsdProxyHost = '[::1]';
+if(!options.gpsdProxyHost) {
+	if(window.location.hostname) options.gpsdProxyHost = window.location.hostname;
+	else options.gpsdProxyHost = '[::1]';
+};
 if(!options.gpsdProxyPort) options.gpsdProxyPort = '3839';
 var subscribe = '?WATCH={"enable":true,"json":true,"subscribe":"TPV,ATT,ALARM,WPT"};';
 // FOR TEST
@@ -304,7 +307,10 @@ else {	// сервер убил процесс или сеть недоступ�
 	console.log(`Websocket closed: connection broken with code ${event.code} by reason ${event.reason}`);
 	let emuri;
 	//console.log('[websocketOnClose] event.target.url=',event.target.url,'uri=',uri);
-	if(event.target.url.replace(/^\/+|\/+$/g, '') == uri.replace(/^\/+|\/+$/g, '')) emuri = `ws://localhost:${options.gpsdProxyPort}`;	// в этом дурацком языке trim без параметров
+	if(event.target.url.replace(/^\/+|\/+$/g, '') == uri.replace(/^\/+|\/+$/g, '')) {	// в этом дурацком языке trim без параметров
+		if(window.location.hostname) emuri = `ws://${window.location.hostname}:${options.gpsdProxyPort}`;
+		else emuri = `ws://localhost:${options.gpsdProxyPort}`;
+	}
 	else emuri = uri;
 	window.setTimeout(doWebsocket, 5000, emuri); 	// перезапустим сокет через 5 секунд
 }

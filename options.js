@@ -1,8 +1,8 @@
 var defaultOptions = {
-	// Хост и порт источника данных:
-	// Backend host & port:
+	// Хост и порт источника данных. Если нет - то имя сервера, если нет - то [::1]:
+	// Backend host & port. If not then it is the host name. If it is not, then it is a [::1]:
 	//"gpsdProxyHost" : "127.0.0.1",
-	"gpsdProxyHost" : "192.168.10.10",
+	//"gpsdProxyHost" : "192.168.10.10",
 	"gpsdProxyPort" : "3838",	// gpsdPROXY
 	//"gpsdProxyHost" : "[::1]",
 	//"gpsdProxyPort" : "3839",	// gpsdPROXY or gpsd2websocket
